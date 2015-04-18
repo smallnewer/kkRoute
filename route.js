@@ -76,7 +76,7 @@ Route.getNowPath = function () {
 }
 
 Route.getPrevPath = function () {
-	return this.history[this.history.length - 1].path;
+	return this.history[this.history.length - 2].path;
 }
 
 Route.onPreload = function () {
@@ -108,7 +108,7 @@ Route.dispatch = function (from, to, param) {
 	this.dispatching = true;
 
 	var cross_paths = this.getCrossPath(from, to);
-
+	
 	var _this = this;
 
 	_this.onPreload();

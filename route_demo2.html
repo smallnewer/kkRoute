@@ -9,7 +9,8 @@
 <input type="text" id="path" placeholder="输入路由"/>
 <button id="go">前往</button>
 <button id="back">后退</button>
-<div id="log"></div>
+<div id="log" style="border:1px solid gray;"></div>
+view:
 <script src="route.js"></script>
 <script>
 	var loading = document.getElementById('loading');
@@ -17,9 +18,43 @@
 	var path = document.getElementById('path');
 	var go = document.getElementById('go');
 	var back = document.getElementById('back');
+	var con = document.getElementById('con');
 	var log = document.getElementById('log');
 
 	
+
+	Route.bind("/",{
+		onPreload: function (cb) {
+			print_log("onPreloadCallback", '/');
+			print_log("preload:", '/');
+
+			loading.innerHTML = "loading: "+ '/';
+			setTimeout(function () {
+				loading.innerHTML = "";
+				print_log("preload end:", '/');
+				cb();
+			}, 3000)
+			
+		},
+		onEnter : function (cb, param) {
+			print_log("onEnterCallback", '/', param);
+
+			this.view = document.createElement("div");
+			this.view.innerHTML = "当前是模块/";
+			document.body.appendChild(this.view);
+
+			cb();
+		},
+		onLeave : function (cb) {
+			print_log('onLeaveCallback', '/');
+
+			if (this.view) {
+				this.view.parentNode.removeChild(this.view);
+			};
+
+			cb();
+		}
+	});
 
 	Route.bind("/a",{
 		onPreload: function (cb) {
@@ -36,10 +71,20 @@
 		},
 		onEnter : function (cb, param) {
 			print_log("onEnterCallback", '/a', param);
+			
+			this.view = document.createElement("div");
+			this.view.innerHTML = "当前是模块/a";
+			document.body.appendChild(this.view);
+
 			cb();
 		},
 		onLeave : function (cb) {
 			print_log('onLeaveCallback', '/a');
+
+			if (this.view) {
+				this.view.parentNode.removeChild(this.view);
+			};
+
 			cb();
 		}
 	});
@@ -58,10 +103,20 @@
 		},
 		onEnter : function (cb, param) {
 			print_log("onEnterCallback", '/a/b', param);
+			
+			this.view = document.createElement("div");
+			this.view.innerHTML = "当前是模块/a/b";
+			document.body.appendChild(this.view);
+
 			cb();
 		},
 		onLeave : function (cb) {
 			print_log('onLeaveCallback', '/a/b');
+
+			if (this.view) {
+				this.view.parentNode.removeChild(this.view);
+			};
+
 			cb();
 		}
 	});
