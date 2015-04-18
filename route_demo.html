@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>路由demo</title>
+</head>
+<body>
+<script src="route.js"></script>
+<script>
+	// Route.on("/",{
+	// 	onEnter : function (param) {
+	// 		console.log("onEnter", '/', param);
+	// 	},
+	// 	onLeave : function () {
+	// 		console.log('onLeave', '/');
+	// 	}
+	// });
+
+	Route.bind("/a",{
+		onPreload: function (cb) {
+			console.log("onPreloadCallback", '/a');
+			cb();
+		},
+		onEnter : function (cb, param) {
+			console.log("onEnterCallback", '/a', param);
+			cb();
+		},
+		onLeave : function (cb) {
+			console.log('onLeaveCallback', '/a');
+			cb();
+		}
+	});
+
+	Route.bind("/a/b",{
+		onPreload: function (cb) {
+			console.log("onPreloadCallback", '/a/b');
+			cb();
+		},
+		onEnter : function (cb, param) {
+			console.log("onEnterCallback", '/a/b', param);
+			cb();
+		},
+		onLeave : function (cb) {
+			console.log('onLeaveCallback', '/a/b');
+			cb();
+		}
+	});
+
+
+	Route.forward("/a/b", 'param1')
+	// Route.forward("/a", "param2")
+	// Route.forward("/a/b", "param3")
+
+
+	// test 部分
+	var path = [
+		// 进入子项
+		['/', '/a/b', '/a,/a/b', ''],
+		['/a', '/a/b', '/a/b', ''],
+		['/a/b', '/a/b/c', '/a/b/c', ''],
+		// 路径相等
+		['/a/b', '/a/b', '', ''],
+		// 返回上层
+		['/a/b/c', '/a/b', '', '/a/b/c'],
+		['/a/b/c/d', '/a/b', '', '/a/b/c/d,/a/b/c'],
+		['/a/b/c/d', '/', '', '/a/b/c/d,/a/b/c,/a/b,/a'],
+		// 跨跟路径
+		['/a/b/c', '/d/e/f', '/d,/d/e,/d/e/f', '/a/b/c,/a/b,/a'],
+		['/a/b/c', '/d', '/d', '/a/b/c,/a/b,/a'],
+		// 不完全跨路径
+		['/a/b/c', '/a/d/e', '/a/d,/a/d/e', '/a/b/c,/a/b'],
+	];
+	console.log("========start test========");
+	for (var i = 0; i < path.length; i++) {
+		console.log(i + '. ============');
+		equalTest.apply(null, path[i]);
+	};
+	console.log("========test ok========");
+
+	function equalTest (from, to, result_enter, result_leave) {
+		console.log("  a.===path==")
+		// path解析
+		var ret = Route.getCrossPath(from, to);
+
+		if (ret.enter.join(",") != result_enter) {
+			console.log('error enter', from, to, ret, result_enter);
+		};
+		if (ret.leave.join(",") != result_leave) {
+			console.log('error leave', from, to, ret, result_leave);
+		};
+
+		if (from === to) {
+			return;
+		};
+
+		console.log("  a.===path ok==")
+
+		console.log("  b.===forward===")
+
+		console.log("[forward] -->", from);
+		var ret = Route.forward(from);
+		
+		console.log("[forward] -->", to);
+		ret = Route.forward(to);
+
+		console.log("  b.===forward ok===")
+		
+
+		// 2. getNowPath
+		var now = Route.getNowPath();
+
+		if (now !== to) {
+			console.log("error getNowPath", now, to);
+		};
+
+		// 3. back
+		Route.back();
+		var now = Route.getNowPath();
+		if (now !== from) {
+			console.log("error back", now, from, to);
+		};
+
+		Route.back();
+
+
+
+
+	}
+</script>
+
+</body>
+</html>

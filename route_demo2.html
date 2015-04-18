@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>路由demo2</title>
+</head>
+<body>
+<div>当前路由: <span id="stat"></span></div>
+<div id="loading"></div>
+<input type="text" id="path" placeholder="输入路由"/>
+<button id="go">前往</button>
+<button id="back">后退</button>
+<div id="log"></div>
+<script src="route.js"></script>
+<script>
+	var loading = document.getElementById('loading');
+	var stat = document.getElementById('stat');
+	var path = document.getElementById('path');
+	var go = document.getElementById('go');
+	var back = document.getElementById('back');
+	var log = document.getElementById('log');
+
+	
+
+	Route.bind("/a",{
+		onPreload: function (cb) {
+			print_log("onPreloadCallback", '/a');
+			print_log("preload:", '/a');
+
+			loading.innerHTML = "loading: "+ '/a';
+			setTimeout(function () {
+				loading.innerHTML = "";
+				print_log("preload end:", '/a');
+				cb();
+			}, 3000)
+			
+		},
+		onEnter : function (cb, param) {
+			print_log("onEnterCallback", '/a', param);
+			cb();
+		},
+		onLeave : function (cb) {
+			print_log('onLeaveCallback', '/a');
+			cb();
+		}
+	});
+
+	Route.bind("/a/b",{
+		onPreload: function (cb) {
+			print_log("onPreloadCallback", '/a/b');
+			print_log("preload:", '/a/b');
+
+			loading.innerHTML = "loading: "+ '/a/b';
+			setTimeout(function () {
+				loading.innerHTML = "";
+				print_log("preload end:", '/a/b');
+				cb();
+			}, 1000)
+		},
+		onEnter : function (cb, param) {
+			print_log("onEnterCallback", '/a/b', param);
+			cb();
+		},
+		onLeave : function (cb) {
+			print_log('onLeaveCallback', '/a/b');
+			cb();
+		}
+	});
+
+
+	function print_log () {
+		var str = ([].slice.call(arguments)).join(',');
+		log.innerHTML += str + "<br>"// + log.innerHTML;
+	}
+
+	function clear_log () {
+		log.innerHTML = '';
+	}
+
+
+	function refreshPath () {
+		stat.innerHTML = Route.getNowPath();
+	}
+	refreshPath();
+	
+
+	go.onclick = function () {
+		clear_log();
+		var to = path.value;
+		Route.forward(to);
+		refreshPath();
+	}
+
+	back.onclick = function () {
+		clear_log();
+		Route.back();
+		refreshPath();
+
+	}
+
+
+
+</script>
+
+</body>
+</html>
