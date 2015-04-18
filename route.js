@@ -239,7 +239,7 @@ Route.try = function (fn, host, callback, param) {
 	try{
 		fn.call(host, callback, param);
 	}catch(err){
-		console && console.warn('route.try get a error', err);
+		console && console.warn('route.try get a error', err, err.stack);
 		callback(err);
 	}
 }
