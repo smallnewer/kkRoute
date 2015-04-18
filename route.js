@@ -79,6 +79,17 @@ Route.getPrevPath = function () {
 	return this.history[this.history.length - 2].path;
 }
 
+Route.get = function (path) {
+	var route = this.route;
+	if (route &&
+		route[path] && 
+		route[path].handle) {
+		return this.route[path].handle;
+	}else{
+		return null;
+	}
+}
+
 Route.onPreload = function () {
 	
 }
