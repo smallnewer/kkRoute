@@ -52,6 +52,9 @@ onLeave: 要离开本处理器，把用到的东西都释放了。
 ### Route.getPrevPath();
 获取上一次的路由地址。
 
+### Route.get(path)
+获取指定路由地址的处理器
+
 ### Route.onPreload
 预加载事件。当路由切换、开始执行预加载方法时，触发的事件。
 
