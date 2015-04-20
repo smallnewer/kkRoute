@@ -128,21 +128,21 @@ Route.dispatch = function (from, to, param) {
 		_this.onPreloadEnd();
 		if (err) {
 			_this.dispatching = false;
-			console && console.error('route dispatch error!', err);
+			console && console.error('route dispatch error!', err, err.stack);
 			return;
 		};
 
 		_this.execEnter(cross_paths.enter, param, function (err) {
 			if (err) {
 				_this.dispatching = false;
-				console && console.error('route dispatch error!', err);
+				console && console.error('route dispatch error!', err, err.stack);
 				return;
 			};
 			
 			_this.execLeave(cross_paths.leave, function (err) {
 				if (err) {
 					_this.dispatching = false;
-					console && console.error('route dispatch error!', err);
+					console && console.error('route dispatch error!', err, err.stack);
 					return;
 				};
 
